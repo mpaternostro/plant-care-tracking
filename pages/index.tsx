@@ -1,52 +1,18 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/utils/supabaseClient";
-import Auth from "@/components/Auth";
-import Account from "@/components/Account";
+import { GetServerSideProps } from "next";
+import { User, withPageAuth } from "@supabase/auth-helpers-nextjs";
 
-export default function Home() {
-	const [isLoading, setIsLoading] = useState(true);
-	const [session, setSession] = useState(null);
+interface HomeProps {
+	user: User;
+}
 
-	useEffect(() => {
-		let mounted = true;
-
-		async function getInitialSession() {
-			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-
-			// only update the react state if the component is still mounted
-			if (mounted) {
-				if (session) {
-					setSession(session);
-				}
-
-				setIsLoading(false);
-			}
-		}
-
-		getInitialSession();
-
-		const { subscription } = supabase.auth.onAuthStateChange(
-			(_event, session) => {
-				setSession(session);
-			},
-		);
-
-		return () => {
-			mounted = false;
-
-			subscription?.unsubscribe();
-		};
-	}, []);
-
+export default function Home({ user }: HomeProps) {
 	return (
 		<div className="container" style={{ padding: "50px 0 100px 0" }}>
-			{!session ? (
-				<Auth />
-			) : (
-				<Account key={session.user.id} session={session} />
-			)}
+			<h1>Hello {user.email}</h1>
 		</div>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps = withPageAuth({
+	redirectTo: "/login",
+});

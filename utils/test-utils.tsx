@@ -1,4 +1,6 @@
 import { render, RenderOptions } from "@testing-library/react";
+import { UserProvider } from "@supabase/auth-helpers-react";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 const customRender = (
 	ui: React.ReactElement,
@@ -6,7 +8,9 @@ const customRender = (
 ) =>
 	render(ui, {
 		// wrap provider(s) here if needed
-		wrapper: ({ children }) => children,
+		wrapper: ({ children }) => (
+			<UserProvider supabaseClient={supabaseClient}>{children}</UserProvider>
+		),
 		...options,
 	});
 
