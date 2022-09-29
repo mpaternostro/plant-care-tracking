@@ -2,6 +2,7 @@ import { GetServerSideProps } from "next";
 import { User, withPageAuth } from "@supabase/auth-helpers-nextjs";
 
 interface HomeProps {
+	accessToken: string;
 	user: User;
 }
 
