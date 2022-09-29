@@ -27,7 +27,7 @@ const user = {
 };
 
 test("home", () => {
-	render(<Home user={user} />);
+	render(<Home initialSession={{ user }} />);
 
 	expect(
 		screen.getByRole("heading", { level: 1, name: "Hello test@test.com" }),

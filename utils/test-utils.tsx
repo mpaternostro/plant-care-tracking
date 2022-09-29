@@ -1,18 +1,23 @@
 import { render, RenderOptions } from "@testing-library/react";
-import { UserProvider } from "@supabase/auth-helpers-react";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 
 const customRender = (
 	ui: React.ReactElement,
 	options?: Omit<RenderOptions, "wrapper">,
-) =>
-	render(ui, {
+) => {
+	const supabaseClient = createBrowserSupabaseClient();
+
+	return render(ui, {
 		// wrap provider(s) here if needed
 		wrapper: ({ children }) => (
-			<UserProvider supabaseClient={supabaseClient}>{children}</UserProvider>
+			<SessionContextProvider supabaseClient={supabaseClient}>
+				{children}
+			</SessionContextProvider>
 		),
 		...options,
 	});
+};
 
 export * from "@testing-library/react";
 export { default as userEvent } from "@testing-library/user-event";
